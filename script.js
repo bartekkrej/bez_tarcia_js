@@ -121,6 +121,29 @@ class Form {
         this.pr.x = this.pr.x + this.przysp.x;
         this.pr.y = this.pr.y + this.przysp.y;
 
+        let x0 = x2ekr(0);
+        let y0 = y2ekr(0);
+        
+        
+        const scale = 300;
+        const argDt = Math.PI / 10;
+        
+        let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
+        let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
+        let x2 = x2ekr(0)
+        let y2 = y2ekr(0)
+        let x3 = x2ekr(-Math.cos(this.przysp.arg + argDt) * scale)
+        let y3 = y2ekr(-Math.sin(this.przysp.arg + argDt) * scale)
+        
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 3 
+        // ctx.fillStyle = "white"
+        ctx.beginPath();
+        //ctx.moveTo(x0, y0)
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
+        ctx.lineTo(x3, y3)
+        ctx.stroke();
 
 
     }
