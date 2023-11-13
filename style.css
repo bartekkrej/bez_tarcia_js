@@ -1,9 +1,38 @@
-html, body{
-    background-color:deepskyblue;
+html,
+body {
+    background-color: deepskyblue;
     color: red;
     margin: 0;
     padding: 0;
 }
-canvas{
-    background-color:blue;
+
+.main {
+    color: black;
+    height: 600px;
+    text-align: center;
+    border: 10px solid;
+    border-color: black;
+}
+
+canvas {
+    background-color: blue;
+    float: left;
+    clear: both;
+    border: 10px solid;
+    border-color: black;
+}
+
+hr {
+    color: black;
+    width: 700px;
+    border: 3px solid;
+}
+h1{
+    font-size: 40px;
+}
+
+ul{
+    display: inline-block;
+    text-align: left;
+    font-size: 30px;
 }
