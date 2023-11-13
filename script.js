@@ -1,10 +1,9 @@
-const canvas = document.querySelector('canvas')
+const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 ctx.fillStyle = "white";
 
 canvas.width = 600;
 canvas.height = 600;
-
 
 
 console.log(Math.atan2(5, 0.0001))
@@ -73,6 +72,7 @@ class Form {
         this.przysp = new Vec()
         this.speedlimit = 70
         this.wartPrzys = 0.25
+        this.kat = 0;
     }
 
 
@@ -113,6 +113,8 @@ class Form {
 
         this.pr.add(this.przysp)
         this.pr = Vec.fromArgValue(this.pr.arg, Math.min(this.speedlimit, this.pr.val))
+        document.getElementById("v").innerHTML = ((parseFloat(this.pr.val).toFixed(0) * 3)  + "kt (" + (parseFloat(this.pr.val * 3 * 1.8).toFixed(0)) + "km/h)" );
+        // console.log(this.pr.val)
 
         let x0 = x2ekr(0);
         let y0 = y2ekr(0);
@@ -120,6 +122,7 @@ class Form {
 
         const scale = 300;
         const argDt = Math.PI / 7;
+
 
         let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
         let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
@@ -136,7 +139,8 @@ class Form {
         ctx.lineTo(x3, y3)
         ctx.stroke();
 
-
+        document.getElementById("x").innerHTML = ("( " + parseFloat(this.poz.x).toFixed(0) + "x, " + parseFloat(this.poz.y).toFixed(0) + "y)");
+        document.getElementById("st").innerHTML = kat;
     }
 
 
@@ -156,10 +160,10 @@ window.onload = function () {
 
 function keyDown(e) {
     if (e.code == "ArrowUp") {
-        form.przysp = Vec.fromArgValue(form.przysp.arg, form.wartPrzys)
+        form.przysp = Vec.fromArgValue(form.przysp.arg, -form.wartPrzys)
     }
     if (e.code == "ArrowDown") {
-        form.przysp = Vec.fromArgValue(form.przysp.arg, -form.wartPrzys)
+        form.przysp = Vec.fromArgValue(form.przysp.arg, +form.wartPrzys)
     }
     if (e.code == "ArrowLeft") {
         form.przysp = Vec.fromArgValue(form.przysp.arg - Math.PI / 20, form.przysp.val)
@@ -167,6 +171,9 @@ function keyDown(e) {
     if (e.code == "ArrowRight") {
         form.przysp = Vec.fromArgValue(form.przysp.arg + Math.PI / 20, form.przysp.val)
     }
+    kat = form.przysp.arg * 180 / Math.PI
+    kat = ((Math.round(kat + 90) % 360) + 360) % 360;    
+    
 
 }
 
