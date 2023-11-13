@@ -5,6 +5,10 @@ ctx.fillStyle = "white";
 canvas.width = 600;
 canvas.height = 600;
 
+
+
+console.log( Math.atan2(5, 0.0001))
+
 GEO_DX = canvas.width / 2;
 GEO_DY = canvas.height / 2;
 
@@ -53,14 +57,15 @@ class Vec {
     add(other) {
         this.x += other.x
         this.y += other.y
-        updateArgVal()
+        this.updateArgVal()
     }
 
     getValue() {
-        return Math.sqrt(this.x * this.x + this.y + this.y)
+        return Math.sqrt(Math.max(0, this.x * this.x + this.y * this.y))
     }
 
     getArg() {
+
         return Math.atan2(this.y, this.x)
     }
 
@@ -71,12 +76,20 @@ class Vec {
 }
 
 
+tst =  new Vec()
+tst.x = 0.15591417442441402 
+tst.y = -0.02469437925487295
+tst.updateArgVal()
+console.log(tst)
+console.log(tst.x * tst.x + tst.y + tst.y)
+
 class Form {
 
     constructor() {
         this.poz = new Vec()
         this.pr = new Vec()
         this.przysp = new Vec()
+        this.speedlimit = 70
 
     }
 
@@ -113,30 +126,59 @@ class Form {
     }
 
     iter() {
-        
+
         this.putTlo()
 
-        this.poz.x = this.poz.x - this.pr.x;
-        this.poz.y = this.poz.y - this.pr.y;
-        this.pr.x = this.pr.x + this.przysp.x;
-        this.pr.y = this.pr.y + this.przysp.y;
+
+        // this.poz.x = this.poz.x - this.pr.x;
+        // this.poz.y = this.poz.y - this.pr.y;
+        // if(this.pr.x > -this.speedlimit && this.pr.x < this.speedlimit){
+        //     this.pr.x = this.pr.x + this.przysp.x;
+        // }
+        // if(this.pr.x == this.speedlimit){
+        //     this.pr.x -= 1
+        // }
+        // if(this.pr.x == -this.speedlimit){
+        //     this.pr.x += 1
+        // }
+
+        // if(this.pr.y > -this.speedlimit && this.pr.y < this.speedlimit){
+        //     this.pr.y = this.pr.y + this.przysp.y;
+        // }
+        // if(this.pr.y >= this.speedlimit){
+        //     this.pr.y -= 1
+        // }
+        // if(this.pr.y <= -this.speedlimit){
+        //     this.pr.y += 1
+        // }
+
+
+        // this.poz.x = this.poz.x - this.pr.x;
+        // this.poz.y = this.poz.y - this.pr.y;
+        this.poz.add(this.pr)
+
+        // this.pr.x = this.pr.x + this.przysp.x;
+        // this.pr.y = this.pr.y + this.przysp.y;
+        this.pr.add(this.przysp)
+        // this.pr.updateArgVal()
+        this.pr = Vec.fromArgValue(this.pr.arg, Math.min(this.speedlimit, this.pr.val))
 
         let x0 = x2ekr(0);
         let y0 = y2ekr(0);
-        
-        
+
+
         const scale = 300;
         const argDt = Math.PI / 10;
-        
+
         let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
         let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
         let x2 = x2ekr(0)
         let y2 = y2ekr(0)
         let x3 = x2ekr(-Math.cos(this.przysp.arg + argDt) * scale)
         let y3 = y2ekr(-Math.sin(this.przysp.arg + argDt) * scale)
-        
+
         ctx.strokeStyle = "red";
-        ctx.lineWidth = 3 
+        ctx.lineWidth = 3
         // ctx.fillStyle = "white"
         ctx.beginPath();
         //ctx.moveTo(x0, y0)
