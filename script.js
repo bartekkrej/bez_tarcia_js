@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d');
+ctx.fillStyle = "white";
 
 canvas.width = 600;
 canvas.height = 600;
@@ -11,10 +12,6 @@ const GEO_D = 0.1;
 EN = 6;
 
 const rozmPkt = 10;
-
-ctx.fillStyle = "#ffff";
-
-
 
 function x2ekr(l) {
     return Math.round(l * GEO_D + GEO_DX)
@@ -72,17 +69,27 @@ class Vec {
         this.val = this.getValue()
     }
 }
+
+
 class Form {
 
     constructor() {
-        this.poz = {
-            x: 100,
-            y: 100,
-        }
+        this.poz = new Vec()
+        this.pr = new Vec()
+        this.przysp = new Vec()
+
     }
 
 
     putTlo() {
+
+
+        ctx.fillStyle = "blue";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+        ctx.fillStyle = "white";
+
         let ax = x2ekr(this.poz.x);
         let ay = y2ekr(this.poz.y);
 
@@ -92,9 +99,9 @@ class Form {
         ax = ax % dx;
         ay = ay % dy;
 
-        for (let i = 0; i < EN; i++) {
+        for (let i = 0; i <= EN; i++) {
             let by = ay;
-            for (let j = 0; j < EN; j++) {
+            for (let j = 0; j <= EN; j++) {
                 ctx.beginPath();
                 ctx.arc(ax, by, 5, 0, 2 * Math.PI);
                 ctx.fill();
@@ -104,10 +111,61 @@ class Form {
             ax = ax + dx;
         }
     }
+
+    iter() {
+        
+        this.putTlo()
+
+        this.poz.x = this.poz.x - this.pr.x;
+        this.poz.y = this.poz.y - this.pr.y;
+        this.pr.x = this.pr.x + this.przysp.x;
+        this.pr.y = this.pr.y + this.przysp.y;
+
+
+
+    }
+
+
 }
 
 
 
-form = new Form()
-form.putTlo()
+let form = new Form()
+
+
+
+window.onload = function () {
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
+    setInterval(update, 10);
+}
+
+function keyDown(e) {
+    if (e.code == "ArrowUp") {
+        form.przysp = Vec.fromArgValue(form.przysp.arg, 1)
+    }
+    if (e.code == "ArrowDown") {
+        form.przysp = Vec.fromArgValue(form.przysp.arg, -1)
+    }
+    if (e.code == "ArrowLeft") {
+        form.przysp = Vec.fromArgValue(form.przysp.arg - Math.PI / 20, form.przysp.val)
+    }
+    if (e.code == "ArrowRight") {
+        form.przysp = Vec.fromArgValue(form.przysp.arg + Math.PI / 20, form.przysp.val)
+    }
+
+    // console.log(form.przysp)
+    // console.log(form.pr)
+}
+
+function keyUp(e) {
+    if (e.code == "ArrowUp" || e.code == "ArrowDown") {
+        form.przysp = Vec.fromArgValue(form.przysp.arg, 0.0)
+    }
+
+}
+
+function update() {
+    form.iter()
+}
 
