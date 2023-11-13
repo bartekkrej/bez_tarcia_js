@@ -7,7 +7,7 @@ canvas.height = 600;
 
 
 
-console.log( Math.atan2(5, 0.0001))
+console.log(Math.atan2(5, 0.0001))
 
 GEO_DX = canvas.width / 2;
 GEO_DY = canvas.height / 2;
@@ -26,18 +26,6 @@ function y2ekr(l) {
 }
 
 class Vec {
-    // constructor(x, y){
-    //     this.x = x
-    //     this.y = y
-    //     this.val = this.getValue()
-    //     this.arg = this.getArg()
-    // }
-    // constructor(x, y, arg, val){
-    //     this.x = x
-    //     this.y = y
-    //     this.val = val
-    //     this.arg = arg
-    // }
     constructor() {
         this.x = 0
         this.y = 0
@@ -76,12 +64,6 @@ class Vec {
 }
 
 
-tst =  new Vec()
-tst.x = 0.15591417442441402 
-tst.y = -0.02469437925487295
-tst.updateArgVal()
-console.log(tst)
-console.log(tst.x * tst.x + tst.y + tst.y)
 
 class Form {
 
@@ -90,7 +72,7 @@ class Form {
         this.pr = new Vec()
         this.przysp = new Vec()
         this.speedlimit = 70
-
+        this.wartPrzys = 0.25
     }
 
 
@@ -126,41 +108,10 @@ class Form {
     }
 
     iter() {
-
         this.putTlo()
-
-
-        // this.poz.x = this.poz.x - this.pr.x;
-        // this.poz.y = this.poz.y - this.pr.y;
-        // if(this.pr.x > -this.speedlimit && this.pr.x < this.speedlimit){
-        //     this.pr.x = this.pr.x + this.przysp.x;
-        // }
-        // if(this.pr.x == this.speedlimit){
-        //     this.pr.x -= 1
-        // }
-        // if(this.pr.x == -this.speedlimit){
-        //     this.pr.x += 1
-        // }
-
-        // if(this.pr.y > -this.speedlimit && this.pr.y < this.speedlimit){
-        //     this.pr.y = this.pr.y + this.przysp.y;
-        // }
-        // if(this.pr.y >= this.speedlimit){
-        //     this.pr.y -= 1
-        // }
-        // if(this.pr.y <= -this.speedlimit){
-        //     this.pr.y += 1
-        // }
-
-
-        // this.poz.x = this.poz.x - this.pr.x;
-        // this.poz.y = this.poz.y - this.pr.y;
         this.poz.add(this.pr)
 
-        // this.pr.x = this.pr.x + this.przysp.x;
-        // this.pr.y = this.pr.y + this.przysp.y;
         this.pr.add(this.przysp)
-        // this.pr.updateArgVal()
         this.pr = Vec.fromArgValue(this.pr.arg, Math.min(this.speedlimit, this.pr.val))
 
         let x0 = x2ekr(0);
@@ -168,7 +119,7 @@ class Form {
 
 
         const scale = 300;
-        const argDt = Math.PI / 10;
+        const argDt = Math.PI / 7;
 
         let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
         let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
@@ -179,9 +130,7 @@ class Form {
 
         ctx.strokeStyle = "red";
         ctx.lineWidth = 3
-        // ctx.fillStyle = "white"
         ctx.beginPath();
-        //ctx.moveTo(x0, y0)
         ctx.moveTo(x1, y1)
         ctx.lineTo(x2, y2)
         ctx.lineTo(x3, y3)
@@ -207,10 +156,10 @@ window.onload = function () {
 
 function keyDown(e) {
     if (e.code == "ArrowUp") {
-        form.przysp = Vec.fromArgValue(form.przysp.arg, 1)
+        form.przysp = Vec.fromArgValue(form.przysp.arg, form.wartPrzys)
     }
     if (e.code == "ArrowDown") {
-        form.przysp = Vec.fromArgValue(form.przysp.arg, -1)
+        form.przysp = Vec.fromArgValue(form.przysp.arg, -form.wartPrzys)
     }
     if (e.code == "ArrowLeft") {
         form.przysp = Vec.fromArgValue(form.przysp.arg - Math.PI / 20, form.przysp.val)
@@ -219,8 +168,6 @@ function keyDown(e) {
         form.przysp = Vec.fromArgValue(form.przysp.arg + Math.PI / 20, form.przysp.val)
     }
 
-    // console.log(form.przysp)
-    // console.log(form.pr)
 }
 
 function keyUp(e) {
