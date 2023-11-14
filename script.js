@@ -1,20 +1,22 @@
-const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
 ctx.fillStyle = "white";
 
 canvas.width = 600;
 canvas.height = 600;
 
 
-console.log(Math.atan2(5, 0.0001))
+var cancel = setInterval(incrementSeconds, 1000);
 
-GEO_DX = canvas.width / 2;
-GEO_DY = canvas.height / 2;
+// console.log(Math.atan2(5, 0.0001))
 
-const GEO_D = 0.1;
-EN = 6;
+const GEO_DX = canvas.width / 2;
+var GEO_DY = canvas.height / 2;
 
-const rozmPkt = 10;
+var  GEO_D = 10;
+var EN = 8;
+
+var rozmPkt = 10;
 
 function x2ekr(l) {
     return Math.round(l * GEO_D + GEO_DX)
@@ -33,7 +35,7 @@ class Vec {
     }
 
     static fromArgValue(arg, val) {
-        let res = new Vec()
+        var res = new Vec()
         res.arg = arg
         res.val = val
         res.x = res.val * Math.cos(arg)
@@ -44,6 +46,13 @@ class Vec {
     add(other) {
         this.x += other.x
         this.y += other.y
+        this.updateArgVal()
+    }
+
+    // dodaj pomnożony
+    addmul(other, mul) {
+        this.x += other.x * mul
+        this.y += other.y * mul
         this.updateArgVal()
     }
 
@@ -69,60 +78,94 @@ class Form {
     constructor() {
         this.poz = new Vec()
         this.pr = new Vec()
+        this.licznikDrogi = 0;
         this.przysp = new Vec()
         this.speedlimit = 70
         this.wartPrzys = 0.25
         this.kat = 0;
+
+        this.bgimg = new Image();
+        this.imgLoaded = false
+        this.bgimg.src = "img/bg_cr.jpg"
+        this.bgimg.onload = () => this.imgLoaded = true
+        this.time = 0
+
     }
 
 
     putTlo() {
 
 
-        ctx.fillStyle = "blue";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
-        ctx.fillStyle = "white";
+        // ctx.fillStyle = "white";
 
         let ax = x2ekr(this.poz.x);
         let ay = y2ekr(this.poz.y);
 
-        let dx = (canvas.width / EN);
-        let dy = (canvas.height / EN);
+   
+        let enx = Math.floor(canvas.width / this.bgimg.width) + 1
+        let eny = Math.floor(canvas.height / this.bgimg.height) + 1
 
-        ax = ax % dx;
-        ay = ay % dy;
+        let imw = (this.bgimg.width);
+        let imh = (this.bgimg.height);
 
-        for (let i = 0; i <= EN; i++) {
+        ax = (ax % imw) - imw;
+        ay = (ay % imh) - imh;
+
+        // bgimg.onload = () => {
+        for (let i = 0; i <= enx; i++) {
             let by = ay;
-            for (let j = 0; j <= EN; j++) {
-                ctx.beginPath();
-                ctx.arc(ax, by, 5, 0, 2 * Math.PI);
-                ctx.fill();
+            for (let j = 0; j <= eny; j++) {
+                //ctx.beginPath();
+                // ctx.arc(ax, by, 5, 0, 2 * Math.PI);
+                // ctx.fill();
+                ctx.drawImage(this.bgimg, ax, by)
 
-                by += dy;
+                by += imh;
             }
-            ax = ax + dx;
-        }
+            ax = ax + imw;
+            }
+        // };
+
     }
 
     iter() {
-        this.putTlo()
-        this.poz.add(this.pr)
 
+        if (!this.imgLoaded)
+            return;
+
+
+        var now = Date.now()
+
+        if (this.time == 0)
+            this.time = now
+
+        var delta = now - this.time;
+        this.time = now 
+
+        this.putTlo()
+        this.poz.addmul(this.pr, delta / 1000.0)
+
+        // if (delta > 20)
+            console.log(delta)
+
+        this.licznikDrogi += this.pr.val * delta / 1000
+
+        document.getElementById("droga").innerHTML = (this.licznikDrogi/1000).toFixed(2) + "km"
+        
         this.pr.add(this.przysp)
         this.pr = Vec.fromArgValue(this.pr.arg, Math.min(this.speedlimit, this.pr.val))
-        document.getElementById("v").innerHTML = ((parseFloat(this.pr.val).toFixed(0) * 3)  + "kt (" + (parseFloat(this.pr.val * 3 * 1.8).toFixed(0)) + "km/h)" );
+        document.getElementById("v").innerHTML = (((this.pr.val * 1.9).toFixed(0)) + "kt (" + (parseFloat(this.pr.val * 1.9 * 1.8).toFixed(0)) + "km/h)");
         // console.log(this.pr.val)
 
         let x0 = x2ekr(0);
         let y0 = y2ekr(0);
 
-
-        const scale = 300;
+        const scale = 3;
         const argDt = Math.PI / 7;
-
 
         let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
         let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
@@ -140,22 +183,21 @@ class Form {
         ctx.stroke();
 
         document.getElementById("x").innerHTML = ("( " + parseFloat(this.poz.x).toFixed(0) + "x, " + parseFloat(this.poz.y).toFixed(0) + "y)");
-        document.getElementById("st").innerHTML = kat;
+        document.getElementById("st").innerHTML = this.kat;
     }
 
 
 }
 
 
-
 let form = new Form()
-
 
 
 window.onload = function () {
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
-    setInterval(update, 10);
+    //setInterval(update, 10);
+   window.requestAnimationFrame(update)
 }
 
 function keyDown(e) {
@@ -171,9 +213,9 @@ function keyDown(e) {
     if (e.code == "ArrowRight") {
         form.przysp = Vec.fromArgValue(form.przysp.arg + Math.PI / 20, form.przysp.val)
     }
-    kat = form.przysp.arg * 180 / Math.PI
-    kat = ((Math.round(kat + 90) % 360) + 360) % 360;    
-    
+    form.kat = form.przysp.arg * 180 / Math.PI
+    form.kat = ((Math.round(form.kat + 90) % 360) + 360) % 360;
+
 
 }
 
@@ -186,5 +228,12 @@ function keyUp(e) {
 
 function update() {
     form.iter()
+    window.requestAnimationFrame(update)
+}
+
+var seconds = 0;
+
+function incrementSeconds() {
+    seconds += 1;
 }
 
