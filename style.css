@@ -8,7 +8,7 @@ body {
 
 .main {
     color: black;
-    height: 600px;
+    height: 617px;
     text-align: center;
     border: 10px solid;
     border-color: black;
@@ -20,11 +20,13 @@ canvas {
     clear: both;
     border: 10px solid;
     border-color: black;
+    width: 40%;
+    height: 40%;
 }
 
 hr {
     color: black;
-    width: 700px;
+    width: 50%;
     border: 3px solid;
 }
 h1{
