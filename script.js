@@ -90,10 +90,10 @@ class Form {
         this.bgimg.onload = () => this.imgLoaded = true
         this.time = 0
         this.f16 = new Image();
-        this.f16.src = "img/f16a3.png"
+        this.f16.src = "img/f16pol.png"
         this.f16.onload = () => this.imgLoaded = true
         this.f16flame = new Image();
-        this.f16flame.src = "img/f16b2a.png"
+        this.f16flame.src = "img/f16flamepol.png"
         this.f16flame.onload = () => this.imgLoaded = true
         this.snd = new Audio("sound/engine.mp3");
         this.snd2 = new Audio("sound/enginestart.mp3");
