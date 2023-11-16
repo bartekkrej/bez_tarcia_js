@@ -14,7 +14,7 @@ const GEO_DX = canvas.width / 2;
 var GEO_DY = canvas.height / 2;
 
 var  GEO_D = 10;
-var EN = 8;
+var EN = 4;
 
 var rozmPkt = 10;
 
@@ -86,9 +86,15 @@ class Form {
 
         this.bgimg = new Image();
         this.imgLoaded = false
-        this.bgimg.src = "img/bg_cr.jpg"
+        this.bgimg.src = "img/bg.png"
         this.bgimg.onload = () => this.imgLoaded = true
         this.time = 0
+        this.f16 = new Image();
+        this.f16.src = "img/f16a3.png"
+        this.f16.onload = () =>this.imgLoaded = true
+        this.f16flame = new Image();
+        this.f16flame.src = "img/f16b2a.png"
+        this.f16flame.onload = () =>this.imgLoaded = true
 
     }
 
@@ -106,8 +112,8 @@ class Form {
         let ay = y2ekr(this.poz.y);
 
    
-        let enx = Math.floor(canvas.width / this.bgimg.width) + 1
-        let eny = Math.floor(canvas.height / this.bgimg.height) + 1
+        let enx = Math.floor(canvas.width / this.bgimg.width) + 2
+        let eny = Math.floor(canvas.height / this.bgimg.height) + 2
 
         let imw = (this.bgimg.width);
         let imh = (this.bgimg.height);
@@ -150,7 +156,7 @@ class Form {
         this.poz.addmul(this.pr, delta / 1000.0)
 
         // if (delta > 20)
-            console.log(delta)
+            // console.log(delta)
 
         this.licznikDrogi += this.pr.val * delta / 1000
 
@@ -164,23 +170,40 @@ class Form {
         let x0 = x2ekr(0);
         let y0 = y2ekr(0);
 
-        const scale = 3;
+        const r = 6;
         const argDt = Math.PI / 7;
 
-        let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * scale)
-        let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * scale)
+
+        // let x1 = x2ekr(-Math.cos(this.przysp.arg - argDt) * r)
+        // let y1 = y2ekr(-Math.sin(this.przysp.arg - argDt) * r)
         let x2 = x2ekr(0)
         let y2 = y2ekr(0)
-        let x3 = x2ekr(-Math.cos(this.przysp.arg + argDt) * scale)
-        let y3 = y2ekr(-Math.sin(this.przysp.arg + argDt) * scale)
+        // let x3 = x2ekr(-Math.cos(this.przysp.arg + argDt) * r)
+        // let y3 = y2ekr(-Math.sin(this.przysp.arg + argDt) * r)
 
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 3
-        ctx.beginPath();
-        ctx.moveTo(x1, y1)
-        ctx.lineTo(x2, y2)
-        ctx.lineTo(x3, y3)
-        ctx.stroke();
+
+
+
+        ctx.save()
+        ctx.translate(x2, y2)
+        ctx.rotate(this.przysp.arg)
+        if(this.przysp.val == 0){
+            ctx.drawImage(this.f16, -this.f16.width*0.75, -this.f16.height/2)    
+        }else{
+            ctx.drawImage(this.f16flame, -this.f16flame.width*0.75, -this.f16flame.height/2)
+        }
+        ctx.restore()
+
+        // ctx.strokeStyle = "red";
+        // ctx.lineWidth = 3
+        // ctx.beginPath();
+        // ctx.moveTo(x1, y1)
+        // ctx.lineTo(x2, y2)
+        // ctx.lineTo(x3, y3)
+        // ctx.stroke();
+
+        
+        
 
         document.getElementById("x").innerHTML = ("( " + parseFloat(this.poz.x).toFixed(0) + "x, " + parseFloat(this.poz.y).toFixed(0) + "y)");
         document.getElementById("st").innerHTML = this.kat;
