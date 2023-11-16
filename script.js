@@ -95,7 +95,11 @@ class Form {
         this.f16flame = new Image();
         this.f16flame.src = "img/f16b2a.png"
         this.f16flame.onload = () => this.imgLoaded = true
-
+        this.snd = new Audio("sound/engine.mp3");
+        this.snd2 = new Audio("sound/enginestart.mp3");
+        this.playAudio = false
+        this.snd.loop = true;
+        this.snd2.loop = false;
     }
 
 
@@ -143,6 +147,7 @@ class Form {
         if (!this.imgLoaded)
             return;
 
+        
 
         var now = Date.now()
 
@@ -189,10 +194,14 @@ class Form {
         ctx.rotate(this.przysp.arg)
         if (this.przysp.val == 0) {
             ctx.drawImage(this.f16, -this.f16.width * 0.75, -this.f16.height / 2)
+            this.snd.volume = 0.5
         } else {
             ctx.drawImage(this.f16flame, -this.f16flame.width * 0.75, -this.f16flame.height / 2)
+            this.snd.volume = 1
         }
         ctx.restore()
+
+        
 
         // ctx.strokeStyle = "red";
         // ctx.lineWidth = 3
@@ -224,6 +233,11 @@ window.onload = function () {
 }
 
 function keyDown(e) {
+    if ((e.code == "ArrowUp" || e.code == "ArrowDown") && form.playAudio == false){
+        form.snd.play()
+        form.snd2.play()
+        form.playAudio = true;
+    }
     if (e.code == "ArrowUp") {
         form.przysp = Vec.fromArgValue(form.przysp.arg, -form.wartPrzys)
     }
