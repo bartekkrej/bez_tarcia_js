@@ -13,7 +13,7 @@ var cancel = setInterval(incrementSeconds, 1000);
 const GEO_DX = canvas.width / 2;
 var GEO_DY = canvas.height / 2;
 
-var  GEO_D = 10;
+var GEO_D = 3.5;
 var EN = 4;
 
 var rozmPkt = 10;
@@ -80,8 +80,8 @@ class Form {
         this.pr = new Vec()
         this.licznikDrogi = 0;
         this.przysp = new Vec()
-        this.speedlimit = 70
-        this.wartPrzys = 0.25
+        this.speedlimit = 200
+        this.wartPrzys = 0.75
         this.kat = 0;
 
         this.bgimg = new Image();
@@ -91,10 +91,10 @@ class Form {
         this.time = 0
         this.f16 = new Image();
         this.f16.src = "img/f16a3.png"
-        this.f16.onload = () =>this.imgLoaded = true
+        this.f16.onload = () => this.imgLoaded = true
         this.f16flame = new Image();
         this.f16flame.src = "img/f16b2a.png"
-        this.f16flame.onload = () =>this.imgLoaded = true
+        this.f16flame.onload = () => this.imgLoaded = true
 
     }
 
@@ -111,7 +111,7 @@ class Form {
         let ax = x2ekr(this.poz.x);
         let ay = y2ekr(this.poz.y);
 
-   
+
         let enx = Math.floor(canvas.width / this.bgimg.width) + 2
         let eny = Math.floor(canvas.height / this.bgimg.height) + 2
 
@@ -133,7 +133,7 @@ class Form {
                 by += imh;
             }
             ax = ax + imw;
-            }
+        }
         // };
 
     }
@@ -150,21 +150,21 @@ class Form {
             this.time = now
 
         var delta = now - this.time;
-        this.time = now 
+        this.time = now
 
         this.putTlo()
         this.poz.addmul(this.pr, delta / 1000.0)
 
         // if (delta > 20)
-            // console.log(delta)
+        // console.log(delta)
 
         this.licznikDrogi += this.pr.val * delta / 1000
 
-        document.getElementById("droga").innerHTML = (this.licznikDrogi/1000).toFixed(2) + "km"
-        
+        document.getElementById("droga").innerHTML = (this.licznikDrogi / 1000).toFixed(2) + "km"
+
         this.pr.add(this.przysp)
         this.pr = Vec.fromArgValue(this.pr.arg, Math.min(this.speedlimit, this.pr.val))
-        document.getElementById("v").innerHTML = (((this.pr.val * 1.9).toFixed(0)) + "kt (" + (parseFloat(this.pr.val * 1.9 * 1.8).toFixed(0)) + "km/h)");
+        document.getElementById("v").innerHTML = (((this.pr.val * 1.9).toFixed(0)) + "kt (" + (parseFloat(this.pr.val * 3.6).toFixed(0)) + "km/h)");
         // console.log(this.pr.val)
 
         let x0 = x2ekr(0);
@@ -187,10 +187,10 @@ class Form {
         ctx.save()
         ctx.translate(x2, y2)
         ctx.rotate(this.przysp.arg)
-        if(this.przysp.val == 0){
-            ctx.drawImage(this.f16, -this.f16.width*0.75, -this.f16.height/2)    
-        }else{
-            ctx.drawImage(this.f16flame, -this.f16flame.width*0.75, -this.f16flame.height/2)
+        if (this.przysp.val == 0) {
+            ctx.drawImage(this.f16, -this.f16.width * 0.75, -this.f16.height / 2)
+        } else {
+            ctx.drawImage(this.f16flame, -this.f16flame.width * 0.75, -this.f16flame.height / 2)
         }
         ctx.restore()
 
@@ -202,8 +202,8 @@ class Form {
         // ctx.lineTo(x3, y3)
         // ctx.stroke();
 
-        
-        
+
+
 
         document.getElementById("x").innerHTML = ("( " + parseFloat(this.poz.x).toFixed(0) + "x, " + parseFloat(this.poz.y).toFixed(0) + "y)");
         document.getElementById("st").innerHTML = this.kat;
@@ -220,7 +220,7 @@ window.onload = function () {
     document.addEventListener("keydown", keyDown);
     document.addEventListener("keyup", keyUp);
     //setInterval(update, 10);
-   window.requestAnimationFrame(update)
+    window.requestAnimationFrame(update)
 }
 
 function keyDown(e) {
